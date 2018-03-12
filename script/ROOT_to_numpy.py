@@ -2,7 +2,36 @@ from ROOT import TFile
 import numpy as np
 from root_numpy import tree2array
 
-
+class Image_ptcs(object):
+    """Creates and holds a binned map (= numpy array)
+    in the (eta,phi) plane of the chosen attribute 
+    of given set of particles
+    """
+    
+    def __init__(self, n_pixel_eta, n_pixel_phi,
+                 pdgid=0, z='e', ptcs_from=origin):
+        self.n_pixel_eta = n_pixel_eta
+        self.n_pixel_phi = n_pixel_phi
+        self.pdgid = pdgid
+        self.z = z
+        self.build(origin)
+            
+    def build(self, origin):
+        self.build_from_tree(origin)
+            
+    def build_from_tree(self, tree):
+        list_of_branches_names = ['ptc_{n}_{val}']# use combination for number and var, handle gen?
+        self.origin_array = tree2array(tree, branches = list_of_branches_names)
+        self.images = []
+        for i in len(self.origin_array[0]):#length of njet?
+            image = [] # turn that ingto numpy array of size n_pixx npixy
+            for ptc in ptcs:
+                if ptc.whatev == -99 :
+                    continue
+                else:
+                       image[findbin(ptc.eta),findbin(ptc.phi)] += ptc.(self.z)
+            self.images.append(image)
+        self.images = np.array(self.images) #to be checked too
 
 def root_to_numpy(root_file_name, numpy_file_name, list_of_branch_names, isSignal=False):
     f = TFile('../samples_root/'+root_file_name+'.root')
